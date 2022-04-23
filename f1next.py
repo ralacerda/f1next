@@ -1,11 +1,12 @@
-import click
-from datetime import datetime, date
 import json
-import requests_cache
-import appdirs
+from datetime import date, datetime
+from math import ceil, floor
 from pathlib import Path
+
+import appdirs
+import click
+import requests_cache
 from dateutil import tz
-from math import floor, ceil
 
 cache_dir = appdirs.user_cache_dir("f1next", "f1next")
 cache_file = "race_cache"
