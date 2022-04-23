@@ -27,13 +27,19 @@ def parse_gp_info(json):
 
     gp_info["race"] = get_event_time(gp_base_info["date"], gp_base_info["time"])
 
-    gp_info["quali"] = get_event_time(
-        gp_base_info["Qualifying"]["date"], gp_base_info["Qualifying"]["time"]
-    )
+    events = {
+        "Qualifying": "quali",
+        "FirstPractice": "practice1",
+        "SecondPractice": "practice2",
+        "ThirdPractice": "practice3",
+        "Sprint": "sprint",
+    }
 
-    gp_info["practice1"] = get_event_time(
-        gp_base_info["FirstPractice"]["date"], gp_base_info["FirstPractice"]["time"]
-    )
+    for key, value in events.items():
+        if key in gp_base_info:
+            gp_info[value] = get_event_time(
+                gp_base_info[key]["date"], gp_base_info[key]["time"]
+            )
 
     return gp_info
 
