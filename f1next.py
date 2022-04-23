@@ -61,11 +61,10 @@ def get_countdown(event_date_time, current_date):
 
 @click.command()
 @click.argument("event")
-@click.option("-o", "--omit", default=0)
 @click.option("-s", "--schedule", is_flag=True, default=False)
 @click.option("-d", "--days", "countdown", flag_value="days")
 @click.option("-c", "--countdown", "countdown", flag_value="countdown")
-def f1next(event, omit, schedule, countdown):
+def f1next(event, schedule, countdown):
     current_date = datetime.today()
 
     gp_info = parse_gp_info(download_gp_info())
