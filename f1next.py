@@ -42,18 +42,13 @@ def get_countdown(event_date_time):
 def get_gp_events(race_json):
     events = []
 
-
-@click.group()
-def f1next():
-    pass
-
-
-@f1next.command()
+@click.command()
+@click.argument("event", nargs=-1)
 @click.option("-o", "--omit", default=0)
 @click.option("-s", "--schedule", is_flag=True, default=False)
 @click.option("-d", "--days", "countdown", flag_value="days")
 @click.option("-c", "--countdown", "countdown", flag_value="countdown")
-def race(omit, schedule, countdown):
+def f1next(event, omit, schedule, countdown):
     race_date_time = get_event_time(race_date, race_time)
     days_to_race, time_to_race = get_countdown(race_date_time)
 
@@ -67,7 +62,6 @@ def race(omit, schedule, countdown):
             echo_countdown(days_to_race, time_to_race)
 
         click.echo()
-
 
 def echo_intro():
     click.echo("The next ", nl=False)
