@@ -1,11 +1,12 @@
-import click
-from datetime import datetime, date
 import json
-import requests_cache
-import appdirs
+from datetime import date, datetime
+from math import ceil, floor
 from pathlib import Path
+
+import appdirs
+import click
+import requests_cache
 from dateutil import tz
-from math import floor, ceil
 
 cache_dir = appdirs.user_cache_dir("f1next", "f1next")
 cache_file = "race_cache"
@@ -41,55 +42,62 @@ def get_countdown(event_date_time):
 def get_gp_events(race_json):
     events = []
 
-
-@click.group()
-def f1next():
-    pass
-
-
-@f1next.command()
+@click.command()
+@click.argument("event", nargs=-1)
 @click.option("-o", "--omit", default=0)
-@click.option("-d", "--hide-date", is_flag=True, default=False)
-@click.option("-c", "--hide-countdown", is_flag=True, default=False)
-@click.option("-n", "--hide-name", is_flag=True, default=False)
-def race(omit, hide_date, hide_countdown, hide_name):
+@click.option("-s", "--schedule", is_flag=True, default=False)
+@click.option("-d", "--days", "countdown", flag_value="days")
+@click.option("-c", "--countdown", "countdown", flag_value="countdown")
+def f1next(event, omit, schedule, countdown):
     race_date_time = get_event_time(race_date, race_time)
     days_to_race, time_to_race = get_countdown(race_date_time)
 
     if days_to_race >= omit:
         echo_intro()
-        if not hide_name:
-            echo_race_name()
-        if days_to_race == 0 and not hide_countdown:
-            click.echo("today! ", nl=hide_date)
-        elif days_to_race == 1 and not hide_countdown:
-            click.echo("tomorrow ", nl=hide_date)
-        elif days_to_race > 1 and not hide_countdown:
-            click.echo("in " + str(days_to_race) + " days ", nl=hide_date)
-        if not hide_date:
-            echo_date(race_date_time)
-        echo_countdown(time_to_race)
+        if countdown == "days":
+            echo_countdown_days(days_to_race)
+        elif countdown == "countdown":
+            echo_countdown_time(time_to_race)
+        elif countdown is None:
+            echo_countdown(days_to_race, time_to_race)
 
+        click.echo()
 
 def echo_intro():
     click.echo("The next ", nl=False)
     click.secho("Formula 1 ", fg="bright_red", nl=False)
     click.echo("race is ", nl=False)
-
-
-def echo_race_name():
     click.echo("the ", nl=False)
     click.secho(race_name, fg="bright_green", nl=False)
     click.echo(" race ", nl=False)
 
 
 def echo_date(race_date_time):
-    click.echo(race_date_time.date().strftime("on %B %d at %I:%M %p"))
+    click.echo(race_date_time.date().strftime("on %B %d at %I:%M %p"), nl=False)
 
 
-def echo_countdown(time_to_race):
+def echo_countdown(days_to_race, time_to_race):
+    if days_to_race >= 1:
+        echo_countdown_days(days_to_race)
+    else:
+        echo_countdown_time(time_to_race)
+
+
+def echo_countdown_days(days_to_race):
+    if days_to_race == 0:
+        click.echo("today! ", nl=False)
+    elif days_to_race == 1:
+        click.echo("tomorrow ", nl=False)
+    elif days_to_race > 1:
+        click.echo("in " + str(days_to_race) + " days ", nl=False)
+
+
+def echo_countdown_time(time_to_race):
     days = time_to_race.days
     hours = floor(time_to_race.seconds / (60 * 60))
     minutes = ceil((time_to_race.seconds / 60) % 60)
-    click.echo("in {} days,".format(days), nl=False)
-    click.echo(" {} hours and {} minutes".format(hours, minutes))
+    if days == 1:
+        click.echo("in 1 day,", nl=False)
+    elif days > 1:
+        click.echo(" in {} days,".format(days), nl=False)
+    click.echo(" {} hours and {} minutes".format(hours, minutes), nl=False)
