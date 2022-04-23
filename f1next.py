@@ -8,6 +8,15 @@ import click
 import requests_cache
 from dateutil import tz
 
+events = {
+    "Race": "Race",
+    "Qualifying": "Qualifying",
+    "FirstPractice": "Free Practice 1",
+    "SecondPractice": "Free Practice 2",
+    "ThirdPractice": "Free Practice 3",
+    "Sprint": "Sprint Race",
+}
+
 
 def download_gp_info():
     cache_dir = appdirs.user_cache_dir("f1next", "f1next")
@@ -24,22 +33,21 @@ def parse_gp_info(json):
 
     gp_info["name"] = gp_base_info["raceName"]
     gp_info["country"] = gp_base_info["Circuit"]["Location"]["country"]
+    gp_info["events"] = {}
 
-    gp_info["race"] = get_event_time(gp_base_info["date"], gp_base_info["time"])
+    gp_info["events"]["Race"] = get_event_time(
+        gp_base_info["date"], gp_base_info["time"]
+    )
 
-    events = {
-        "Qualifying": "quali",
-        "FirstPractice": "practice1",
-        "SecondPractice": "practice2",
-        "ThirdPractice": "practice3",
-        "Sprint": "sprint",
-    }
-
-    for key, value in events.items():
+    for key in events.keys():
         if key in gp_base_info:
-            gp_info[value] = get_event_time(
+            gp_info["events"][key] = get_event_time(
                 gp_base_info[key]["date"], gp_base_info[key]["time"]
             )
+
+    gp_info["events"] = dict(sorted(gp_info["events"].items(), key=lambda v: v[1]))
+
+    print(gp_info)
 
     return gp_info
 
@@ -71,9 +79,13 @@ def f1next(event, schedule, countdown):
 
     echo_intro(gp_info)
 
-    if event == "race":
+    if not schedule:
+        days_to_event, time_to_event = get_countdown(
+            gp_info["events"]["Race"], current_date
+        )
+
         click.echo("The race will start in", nl=False)
-        days_to_event, time_to_event = get_countdown(gp_info["race"], current_date)
+
         echo_countdown_time(time_to_event)
 
     # if days_to_race >= omit:
@@ -87,6 +99,7 @@ def f1next(event, schedule, countdown):
 
     #     click.echo()
 
+
 def echo_intro(gp_info):
     click.echo("The next ", nl=False)
     click.secho("Formula 1 ", fg="bright_red", nl=False)
@@ -94,8 +107,10 @@ def echo_intro(gp_info):
     click.echo("the ", nl=False)
     click.secho(gp_info["name"], fg="bright_green")
 
+
 def echo_event(gp_info, event_name):
     pass
+
 
 def echo_date(race_date_time):
     click.echo(race_date_time.date().strftime("on %B %d at %I:%M %p"), nl=False)
