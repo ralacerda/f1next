@@ -51,6 +51,7 @@ def parse_gp_info(json):
 
     return gp_info
 
+
 def get_event_time(event_date, event_time):
     date_time_format = "%Y-%m-%d %H:%M:%S"
     date_time_string = " ".join([event_date, event_time[:-1]])
@@ -58,17 +59,24 @@ def get_event_time(event_date, event_time):
     event_date_time = event_date_time.replace(tzinfo=tz.UTC)
     return event_date_time
 
+
 @click.command()
 @click.argument("event")
-@click.option("-s", "--schedule", is_flag=True, default=False)
-def f1next(event, schedule):
+@click.option("-s", "--schedule", "mode", flag_value="schedule")
+@click.option("-c", "--countdown", "mode", flag_value="countdown")
+def f1next(event, mode="simple"):
     gp_info = parse_gp_info(download_gp_info())
 
     echo_intro(gp_info)
 
-    if not schedule:
-        for event in gp_info["events"].keys():
-            echo_countdown(gp_info, event)
+    if mode == "countdown":
+        for event_info in gp_info["events"].keys():
+            echo_countdown(gp_info, event_info)
+
+    if mode == "schedule":
+        for event_info in gp_info["events"].keys():
+            echo_schedule(gp_info, event_info)
+
 
 def echo_intro(gp_info):
     click.echo("The next ", nl=False)
@@ -79,8 +87,11 @@ def echo_intro(gp_info):
     # TODO Include country flag
 
 
-def echo_date(race_date_time):
-    click.echo(race_date_time.date().strftime("on %B %d at %I:%M %p"), nl=False)
+def echo_schedule(gp_info, event_name):
+    event_datetime = gp_info["events"][event_name]
+    event_local_datetime = event_datetime.astimezone()
+    click.echo(events[event_name].ljust(30), nl=False)
+    click.echo(event_local_datetime.strftime("    %B %d at %I:%M %p"))
 
 
 def echo_countdown(gp_info, event_name):
@@ -101,6 +112,7 @@ def echo_countdown(gp_info, event_name):
             click.echo("{} hours and {} minutes".format(hours, minutes))
         elif time_left.days == 0:
             click.echo("{} hours and {} minutes".format(hours, minutes))
+
 
 # TODO: Schedule should print the full schedule color coded
 # If the event is in the past, countdown should print it in red
