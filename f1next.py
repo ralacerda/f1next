@@ -20,12 +20,14 @@ events = {
 current_datetime = datetime.now(tz.gettz())
 
 
-def download_gp_info():
+def download_gp_info(clear=False):
     cache_dir = appdirs.user_cache_dir("f1next", "f1next")
     cache_file = "race_cache"
     cache_path = Path(cache_dir, cache_file)
 
     request = requests_cache.CachedSession(cache_path)
+    if clear:
+        request.cache.clear()
     return request.get("https://ergast.com/api/f1/current/next.json").json()
 
 
@@ -64,8 +66,9 @@ def get_event_time(event_date, event_time):
 @click.argument("event")
 @click.option("-s", "--schedule", "mode", flag_value="schedule")
 @click.option("-c", "--countdown", "mode", flag_value="countdown")
-def f1next(event, mode="simple"):
-    gp_info = parse_gp_info(download_gp_info())
+@click.option("-f", "--force-download", is_flag=True, default=False)
+def f1next(event, mode, force_download):
+    gp_info = parse_gp_info(download_gp_info(force_download))
 
     echo_intro(gp_info)
 
