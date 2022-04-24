@@ -70,7 +70,7 @@ def get_event_time(event_date, event_time):
 def f1next(event, mode, force_download):
     gp_info = parse_gp_info(download_gp_info(force_download))
 
-    echo_intro(gp_info)
+    echo_intro(gp_info, mode)
 
     if mode == "countdown":
         for event_info in gp_info["events"].keys():
@@ -81,13 +81,19 @@ def f1next(event, mode, force_download):
             echo_schedule(gp_info, event_info)
 
 
-def echo_intro(gp_info):
-    click.echo("The next ", nl=False)
+def echo_intro(gp_info, mode):
+    click.echo("The ", nl=False)
     click.secho("Formula 1 ", fg="bright_red", nl=False)
-    click.echo("weekend is ", nl=False)
-    click.echo("the ", nl=False)
-    click.secho(gp_info["name"], fg="bright_green")
+    if mode is None:
+        click.echo("next weekend is the ", nl=False)
+        click.secho(gp_info["name"], fg="bright_green")
+        # TODO print the date
+    if mode == "schedule":
+        click.secho(gp_info["name"], fg="bright_green", nl=False)
+        click.echo(" Schedule")
     # TODO Include country flag
+    if mode == "coutndown":
+        pass
 
 
 def echo_schedule(gp_info, event_name):
