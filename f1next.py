@@ -1,6 +1,5 @@
 import json
-from datetime import date, datetime
-from math import ceil, floor
+from datetime import datetime
 from pathlib import Path
 
 import appdirs
@@ -8,121 +7,56 @@ import click
 import requests_cache
 from dateutil import tz
 
-events = {
-    "Race": "Race",
-    "Qualifying": "Qualifying",
-    "FirstPractice": "Free Practice 1",
-    "SecondPractice": "Free Practice 2",
-    "ThirdPractice": "Free Practice 3",
-    "Sprint": "Sprint Race",
-}
-
-current_datetime = datetime.now(tz.gettz())
+events = [
+    "Race",
+    "Qualifying",
+    "FirstPractice",
+    "SecondPractice",
+    "ThirdPractice",
+    "Sprint",
+]
 
 
-def download_gp_info(clear=False):
+def get_event_date(event_date):
+    date_format = "%Y-%m-%d"
+    event_date = datetime.strptime(event_date, date_format)
+    event_date = event_date.replace(tzinfo=tz.UTC)
+    return event_date
+
+
+@click.command()
+@click.option("-f", "--force-download", is_flag=True, default=False)
+def f1next(force_download):
     cache_dir = appdirs.user_cache_dir("f1next", "f1next")
     cache_file = "race_cache"
     cache_path = Path(cache_dir, cache_file)
 
     request = requests_cache.CachedSession(cache_path)
-    if clear:
+    if force_download:
         request.cache.clear()
-    return request.get("https://ergast.com/api/f1/current/next.json").json()
+    api_url = "https://ergast.com/api/f1/current/next.json"
+    request_json = request.get(api_url).json()
+    next_round = request_json["MRData"]["RaceTable"]["Races"][0]
 
+    event_date_list = []
 
-def parse_gp_info(json):
-    gp_info = {}
-    gp_base_info = json["MRData"]["RaceTable"]["Races"][0]
+    event_date_list.append(get_event_date(next_round["date"]))
 
-    gp_info["name"] = gp_base_info["raceName"]
-    gp_info["country"] = gp_base_info["Circuit"]["Location"]["country"]
-    gp_info["events"] = {}
+    for key in events:
+        if key in next_round:
+            event_date_list.append(get_event_date(next_round[key]["date"]))
 
-    gp_info["events"]["Race"] = get_event_time(
-        gp_base_info["date"], gp_base_info["time"]
-    )
+    first_event_day = min(event_date_list).date()
+    last_event_day = max(event_date_list).date()
 
-    for key in events.keys():
-        if key in gp_base_info:
-            gp_info["events"][key] = get_event_time(
-                gp_base_info[key]["date"], gp_base_info[key]["time"]
-            )
-
-    gp_info["events"] = dict(sorted(gp_info["events"].items(), key=lambda v: v[1]))
-
-    return gp_info
-
-
-def get_event_time(event_date, event_time):
-    date_time_format = "%Y-%m-%d %H:%M:%S"
-    date_time_string = " ".join([event_date, event_time[:-1]])
-    event_date_time = datetime.strptime(date_time_string, date_time_format)
-    event_date_time = event_date_time.replace(tzinfo=tz.UTC)
-    return event_date_time
-
-
-@click.command()
-@click.argument("event")
-@click.option("-s", "--schedule", "mode", flag_value="schedule")
-@click.option("-c", "--countdown", "mode", flag_value="countdown")
-@click.option("-f", "--force-download", is_flag=True, default=False)
-def f1next(event, mode, force_download):
-    gp_info = parse_gp_info(download_gp_info(force_download))
-
-    echo_intro(gp_info, mode)
-
-    if mode == "countdown":
-        for event_info in gp_info["events"].keys():
-            echo_countdown(gp_info, event_info)
-
-    if mode == "schedule":
-        for event_info in gp_info["events"].keys():
-            echo_schedule(gp_info, event_info)
-
-
-def echo_intro(gp_info, mode):
-    click.echo("The ", nl=False)
+    click.echo("The next ", nl=False)
     click.secho("Formula 1 ", fg="bright_red", nl=False)
-    if mode is None:
-        click.echo("next weekend is the ", nl=False)
-        click.secho(gp_info["name"], fg="bright_green")
-        # TODO print the date
-    if mode == "schedule":
-        click.secho(gp_info["name"], fg="bright_green", nl=False)
-        click.echo(" Schedule")
-    # TODO Include country flag
-    if mode == "coutndown":
-        pass
-
-
-def echo_schedule(gp_info, event_name):
-    event_datetime = gp_info["events"][event_name]
-    event_local_datetime = event_datetime.astimezone()
-    click.echo(events[event_name].ljust(30), nl=False)
-    click.echo(event_local_datetime.strftime("    %B %d at %I:%M %p"))
-
-
-def echo_countdown(gp_info, event_name):
-    event_datetime = gp_info["events"][event_name]
-    time_left = event_datetime - current_datetime
-    hours = floor(time_left.seconds / (60 * 60))
-    minutes = ceil((time_left.seconds / 60) % 60)
-
-    if current_datetime < event_datetime:
-        click.echo("The ", nl=False)
-        click.echo(event_name, nl=False)
-        click.echo(" will start in ", nl=False)
-        if time_left.days > 1:
-            click.echo(time_left, nl=False)
-            click.echo("days")
-        elif time_left.days == 1:
-            click.echo("in 1 day,", nl=False)
-            click.echo("{} hours and {} minutes".format(hours, minutes))
-        elif time_left.days == 0:
-            click.echo("{} hours and {} minutes".format(hours, minutes))
-
-
-# TODO: Schedule should print the full schedule color coded
-# If the event is in the past, countdown should print it in red
-# and include information about when it started
+    click.echo("weekend is the ", nl=False)
+    click.secho(next_round["raceName"], fg="bright_green", nl=False)
+    click.echo(" on ", nl=False)
+    if first_event_day.month == last_event_day.month:
+        click.echo(first_event_day.strftime("%-d-"), nl=False)
+        click.echo(last_event_day.strftime("%-d %B"))
+    else:
+        click.echo(first_event_day.strftime("%-d %B-"), nl=False)
+        click.echo(last_event_day.strftime("%-d %B"))
