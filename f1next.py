@@ -25,7 +25,13 @@ def get_event_date(event_date):
 
 
 @click.command()
-@click.option("-f", "--force-download", is_flag=True, default=False)
+@click.option(
+    "-f",
+    "--force-download",
+    is_flag=True,
+    default=False,
+    help="Force cache to be refreshed.",
+)
 def f1next(force_download):
     cache_dir = appdirs.user_cache_dir("f1next", "f1next")
     cache_file = "race_cache"
