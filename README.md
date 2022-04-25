@@ -24,8 +24,8 @@ Feel free to open an issue if you have any feedback or features suggestions.
 
 ### TODO
 
-[ ] - Error handling
-[ ] - Option to display more information about the GP
-[ ] - Weekend Schedule
-[ ] - Countdown to closest event
-[ ] - Emoji Flag
+- [ ] Error handling 
+- [ ] Option to display more information about the GP 
+- [ ] Weekend Schedule 
+- [ ] Countdown to closest event 
+- [ ] Emoji Flag 
