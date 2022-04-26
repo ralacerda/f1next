@@ -17,6 +17,14 @@ It uses local time for the detected timezone.
 
 ![Example of schedule](screenshots/screenshot_schedule.png "Schedule example")
 
+The `-c` or `--countdown` flag will also print a countdown in days to the next event. If the event starts in less than 48 hours, it will also print hours and minutes left.
+
+All the options can be used together in any combination. 
+
+    f1next -sc
+    f1next -s
+    f1next -c
+
 The script uses `click.echo()` to print out information. If you pipe the output to a file, colors won't be included.
 
 ![Piping to a file](screenshots/screenshot2.png "Pipe to file")

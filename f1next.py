@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+from math import ceil, floor
 from pathlib import Path
 
 import appdirs
@@ -44,7 +45,14 @@ def get_event_datetime(event_date: str, event_time: str) -> datetime:
     default=False,
     help="Show the schedule for all events in the weekend.",
 )
-def f1next(force_download, schedule):
+@click.option(
+    "-c",
+    "--countdown",
+    is_flag=True,
+    default=False,
+    help="Show countdown to the next event",
+)
+def f1next(force_download, schedule, countdown):
     cache_dir = appdirs.user_cache_dir("f1next", "f1next")
     cache_file = "f1next_cache"
     cache_path = Path(cache_dir, cache_file)
@@ -93,10 +101,41 @@ def f1next(force_download, schedule):
         # Line break since last echo didn't include one
         click.echo("")
         for event_name, event_datetime in gp_events.items():
-            # We need to add a space before Practice
+
+            # Add a space before Practice
             if "Practice" in event_name:
                 event_name = event_name[:-8] + " " + event_name[-8:]
+
             click.echo(event_name.ljust(20), nl=False)
             click.echo(
                 event_datetime.astimezone().strftime("%d %b starting at %I:%M %p")
             )
+
+    if countdown:
+        current_datetime = datetime.now().replace(tzinfo=tz.gettz())
+
+        # Looking for the first event that has not started yet
+        for event_name, event_datetime in gp_events.items():
+            if event_datetime > current_datetime:
+                time_left = event_datetime - current_datetime
+                hours = floor(time_left.seconds / (60 * 60))
+                minutes = ceil((time_left.seconds / 60) % 60)
+
+                # Add a space before Practice
+                if "Practice" in event_name:
+                    event_name = event_name[:-8] + " " + event_name[-8:]
+
+                click.echo(f"{event_name} will start in ", nl=False)
+
+                if time_left.days > 1:
+                    click.echo(time_left.days, nl=False)
+                    click.echo(" days")
+                elif time_left.days == 1:
+                    click.echo("in 1 day,", nl=False)
+                    click.echo("{} hours and {} minutes".format(hours, minutes))
+                elif time_left.days == 0:
+                    click.echo("{} hours and {} minutes".format(hours, minutes))
+
+                # Break to not print other events
+                # It doesn't print anything if it doesn't find an event in the future
+                break
