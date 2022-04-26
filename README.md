@@ -3,7 +3,7 @@
 A simple python script that prints the dates of the next Formula 1 Grand Prix.
 It uses [Ergast API](https://ergast.com/mrd/terms/) and includes cache to reduce API calls.
 
-![Example of output](screenshot1.png "Example")
+![Example of output](screenshots/screenshot1.png "Example")
 
 ## Usage
 
@@ -15,11 +15,11 @@ The cache lasts for 24 hours, so information about the next Grand Prix might be 
 The `-s` or `--schedule` flag will print the full schedule for the weekend, instead of only showing the first and last dates.
 It uses local time for the detected timezone.
 
-![Example of schedule](screenshot_schedule.png "Schedule example")
+![Example of schedule](screenshots/screenshot_schedule.png "Schedule example")
 
 The script uses `click.echo()` to print out information. If you pipe the output to a file, colors won't be included.
 
-![Piping to a file](screenshot2.png "Pipe to file")
+![Piping to a file](screenshots/screenshot2.png "Pipe to file")
 
 
 ## Notes
