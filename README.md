@@ -12,7 +12,7 @@ It uses [Ergast API](https://ergast.com/mrd/terms/) and includes cache to reduce
 Use the `-f` or `--force-download` flag to refresh the cache.
 The cache lasts for 24 hours, so information about the next Grand Prix might be wrong while another Grand Prix is taking place.
 
-The script uses `click.echo` to print out information. If you pipe the output to a file, colors won't be included.
+The script uses `click.echo()` to print out information. If you pipe the output to a file, colors won't be included.
 
 ![Piping to a file](screenshot2.png "Pipe to file")
 
@@ -24,6 +24,7 @@ Feel free to open an issue if you have any feedback or features suggestions.
 
 ### TODO
 
+- [ ] Publish on PyPI
 - [ ] Error handling 
 - [ ] Option to display more information about the GP 
 - [ ] Weekend Schedule 

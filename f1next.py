@@ -7,6 +7,7 @@ import click
 import requests_cache
 from dateutil import tz
 
+# List of events are they are named in the Ergast F1 API
 events = [
     "Race",
     "Qualifying",
@@ -17,7 +18,11 @@ events = [
 ]
 
 
-def get_event_date(event_date):
+def get_event_date(event_date: str) -> datetime:
+    """A helper function that transforms a date string into
+    a datetime object, with UTC as the timezone
+    """
+
     date_format = "%Y-%m-%d"
     event_date = datetime.strptime(event_date, date_format)
     event_date = event_date.replace(tzinfo=tz.UTC)
@@ -34,7 +39,7 @@ def get_event_date(event_date):
 )
 def f1next(force_download):
     cache_dir = appdirs.user_cache_dir("f1next", "f1next")
-    cache_file = "race_cache"
+    cache_file = "f1next_cache"
     cache_path = Path(cache_dir, cache_file)
 
     request = requests_cache.CachedSession(cache_path)
@@ -46,8 +51,10 @@ def f1next(force_download):
 
     event_date_list = []
 
+    # Date of the round refers to the race date
     event_date_list.append(get_event_date(next_round["date"]))
 
+    # Other events are their own dictionaries
     for key in events:
         if key in next_round:
             event_date_list.append(get_event_date(next_round[key]["date"]))
@@ -60,9 +67,11 @@ def f1next(force_download):
     click.echo("weekend is the ", nl=False)
     click.secho(next_round["raceName"], fg="bright_green", nl=False)
     click.echo(" on ", nl=False)
+
+
     if first_event_day.month == last_event_day.month:
+        # If the month are the same, no need to print it twice
         click.echo(first_event_day.strftime("%-d-"), nl=False)
-        click.echo(last_event_day.strftime("%-d %B"))
     else:
         click.echo(first_event_day.strftime("%-d %B-"), nl=False)
-        click.echo(last_event_day.strftime("%-d %B"))
+    click.echo(last_event_day.strftime("%-d %B"))
