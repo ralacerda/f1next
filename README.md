@@ -7,6 +7,17 @@ It uses [Ergast API](https://ergast.com/mrd/terms/) and includes cache to reduce
 
 ## Usage
 
+```
+Usage: f1next [OPTIONS]
+
+Options:
+  -f, --force-download  Force cache to be refreshed.
+  -s, --schedule        Show the schedule for all events in the weekend.
+  -c, --countdown       Show countdown to the next event
+  --help                Show this message and exit.
+```
+
+
 `f1next` will print the name and date of the next Formula 1 Grand Prix.
 
 Use the `-f` or `--force-download` flag to refresh the cache.
