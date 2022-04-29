@@ -58,5 +58,14 @@ Feel free to open an issue if you have any feedback or features suggestions.
 - [x] Countdown to closest event 
 - [X] Option to display more information about the GP 
 - [ ] Publish on PyPI
-- [ ] Error handling 
+- [ ] Error handling
+
+### Possible features
+
+- [ ] Include round number
+- [ ] Scheadule table with better formating
+- [ ] Better color output (grey out past events)
+- [ ] Verbose option for debugging
+- [ ] Add `-h` shortcut for help message
+- [ ] Option to open the wikipedia link for the circuit/event
 - [ ] ~~Emoji Flag~~
