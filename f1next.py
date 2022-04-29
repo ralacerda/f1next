@@ -58,8 +58,7 @@ def get_event_datetime(event_date: str, event_time: str) -> datetime:
     "--circuit-information",
     is_flag=True,
     default=False,
-    help="Show circuit name and country"
-
+    help="Show circuit name and country",
 )
 def f1next(force_download, schedule, countdown, circuit_information):
     """Simple script that shows you information about the next F1 Grand Prix"""
