@@ -1,7 +1,7 @@
 # F1NEXT
 
 A simple python script that prints the dates of the next Formula 1 Grand Prix.
-It uses [Ergast API](https://ergast.com/mrd/terms/) and includes cache to reduce API calls.
+It uses [Ergast API](https://ergast.com/mrd) and includes cache to reduce API calls.
 
 ![Example of output](screenshots/screenshot1.png "Example")
 
