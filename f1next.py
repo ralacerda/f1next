@@ -118,17 +118,32 @@ def f1next(force_download, schedule, countdown, circuit_information):
         click.secho(f"{circuit_name}, {circuit_city}, {circuit_country}", bold=True)
 
     if schedule:
-        # Line break since last echo didn't include one
+        # Line break for better ouput
+        click.echo("")
+
+        # Headears and a line
+        click.echo("Event".ljust(30) + "Date and local time")
+        click.echo("-----".ljust(30) + "-------------------")
+
         for event_name, event_datetime in gp_events.items():
 
             # Add a space before Practice
             if "Practice" in event_name:
                 event_name = event_name[:-8] + " " + event_name[-8:]
 
-            click.echo(event_name.ljust(20), nl=False)
+            click.echo(event_name.ljust(30), nl=False)
             click.echo(
                 event_datetime.astimezone().strftime("%d %b starting at %I:%M %p")
             )
+
+        # Footer line
+        click.echo("----")
+
+        # I coud not find a easy way to show timezone name
+        # Easiest solution is to show the UTC offset
+        # We include de ":" because "%z" return +HHMM or -HHMM
+        zone_offset = zone = gp_events["Race"].astimezone().strftime("%z")
+        click.echo("Showing times for UTC" + zone_offset[:3] + ":" + zone_offset[3:])
 
     if countdown:
         current_datetime = datetime.now().replace(tzinfo=tz.gettz())
