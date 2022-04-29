@@ -56,7 +56,7 @@ Feel free to open an issue if you have any feedback or features suggestions.
 
 - [X] Weekend Schedule 
 - [x] Countdown to closest event 
+- [X] Option to display more information about the GP 
 - [ ] Publish on PyPI
 - [ ] Error handling 
-- [ ] Option to display more information about the GP 
-- [ ] Emoji Flag 
+- [ ] ~~Emoji Flag~~
