@@ -49,8 +49,8 @@ Feel free to open an issue if you have any feedback or features suggestions.
 ### TODO
 
 - [X] Weekend Schedule 
+- [x] Countdown to closest event 
 - [ ] Publish on PyPI
 - [ ] Error handling 
 - [ ] Option to display more information about the GP 
-- [ ] Countdown to closest event 
 - [ ] Emoji Flag 
