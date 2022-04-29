@@ -57,18 +57,19 @@ Feel free to open an issue if you have any feedback or features suggestions.
 
 ### TODO
 
-- [X] Weekend Schedule 
+- [x] Weekend Schedule 
 - [x] Countdown to closest event 
-- [X] Option to display more information about the GP 
+- [x] Option to display more information about the GP 
 - [ ] Publish on PyPI
 - [ ] Error handling
+- [ ] Change main function to facilitate testing
 
 ### Possible features
 
+- [x] Add `-h` shortcut for help message
+- [x] Scheadule table with better formating
 - [ ] Include round number
-- [ ] Scheadule table with better formating
 - [ ] Better color output (grey out past events)
 - [ ] Verbose option for debugging
-- [ ] Add `-h` shortcut for help message
 - [ ] Option to open the wikipedia link for the circuit/event
 - [ ] ~~Emoji Flag~~
