@@ -31,7 +31,7 @@ def get_event_datetime(event_date: str, event_time: str) -> datetime:
 
 
 @click.command()
-@click.help_option('-h', '--help')
+@click.help_option("-h", "--help")
 @click.option(
     "-f",
     "--force-download",
