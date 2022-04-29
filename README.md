@@ -8,15 +8,18 @@ It uses [Ergast API](https://ergast.com/mrd) and includes cache to reduce API ca
 ## Usage
 
 ```
+
 Usage: f1next [OPTIONS]
 
+  Simple script that shows you information about the next F1 Grand Prix
+
 Options:
+  -h, --help                 Show this message and exit.
   -f, --force-download       Force cache to be refreshed.
   -s, --schedule             Show the schedule for all events in the weekend.
   -c, --countdown            Show countdown to the next event
   -i, --circuit-information  Show circuit name and country
-  --help                     Show this message and exit.
-
+  
 ```
 
 
@@ -34,7 +37,7 @@ The `-c` or `--countdown` flag will also print a countdown in days to the next e
 
 The `-i` or `--circuit-information` flag will print the race circuit name, city and country.
 
-All the options can be used together in any combination and order. 
+All the options can be used together in any combination and order, except for `-h, --help`.
 
     f1next -sc
     f1next -s

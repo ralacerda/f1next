@@ -31,6 +31,7 @@ def get_event_datetime(event_date: str, event_time: str) -> datetime:
 
 
 @click.command()
+@click.help_option('-h', '--help')
 @click.option(
     "-f",
     "--force-download",
@@ -61,6 +62,7 @@ def get_event_datetime(event_date: str, event_time: str) -> datetime:
 
 )
 def f1next(force_download, schedule, countdown, circuit_information):
+    """Simple script that shows you information about the next F1 Grand Prix"""
     cache_dir = appdirs.user_cache_dir("f1next", "f1next")
     cache_file = "f1next_cache"
     cache_path = Path(cache_dir, cache_file)
