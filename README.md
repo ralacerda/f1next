@@ -11,10 +11,12 @@ It uses [Ergast API](https://ergast.com/mrd/terms/) and includes cache to reduce
 Usage: f1next [OPTIONS]
 
 Options:
-  -f, --force-download  Force cache to be refreshed.
-  -s, --schedule        Show the schedule for all events in the weekend.
-  -c, --countdown       Show countdown to the next event
-  --help                Show this message and exit.
+  -f, --force-download       Force cache to be refreshed.
+  -s, --schedule             Show the schedule for all events in the weekend.
+  -c, --countdown            Show countdown to the next event
+  -i, --circuit-information  Show circuit name and country
+  --help                     Show this message and exit.
+
 ```
 
 
@@ -30,11 +32,15 @@ It uses local time for the detected timezone.
 
 The `-c` or `--countdown` flag will also print a countdown in days to the next event. If the event starts in less than 48 hours, it will also print hours and minutes left.
 
-All the options can be used together in any combination. 
+The `-i` or `--circuit-information` flag will print the race circuit name, city and country.
+
+All the options can be used together in any combination and order. 
 
     f1next -sc
     f1next -s
     f1next -c
+    f1next -isc
+    f1nxt -si
 
 The script uses `click.echo()` to print out information. If you pipe the output to a file, colors won't be included.
 

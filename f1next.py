@@ -52,7 +52,15 @@ def get_event_datetime(event_date: str, event_time: str) -> datetime:
     default=False,
     help="Show countdown to the next event",
 )
-def f1next(force_download, schedule, countdown):
+@click.option(
+    "-i",
+    "--circuit-information",
+    is_flag=True,
+    default=False,
+    help="Show circuit name and country"
+
+)
+def f1next(force_download, schedule, countdown, circuit_information):
     cache_dir = appdirs.user_cache_dir("f1next", "f1next")
     cache_file = "f1next_cache"
     cache_path = Path(cache_dir, cache_file)
@@ -95,11 +103,21 @@ def f1next(force_download, schedule, countdown):
             click.echo(first_event_day.strftime("%-d-"), nl=False)
         else:
             click.echo(first_event_day.strftime("%-d %B-"), nl=False)
-        click.echo(last_event_day.strftime("%-d %B"))
+        click.echo(last_event_day.strftime("%-d %B"), nl=False)
 
-    else:
+    # Linebreak
+    click.echo("")
+
+    if circuit_information:
+        circuit = next_round["Circuit"]
+        circuit_name = next_round["Circuit"]["circuitName"]
+        circuit_city = next_round["Circuit"]["Location"]["locality"]
+        circuit_country = next_round["Circuit"]["Location"]["country"]
+        click.echo("at the ", nl=False)
+        click.secho(f"{circuit_name}, {circuit_city}, {circuit_country}", bold=True)
+
+    if schedule:
         # Line break since last echo didn't include one
-        click.echo("")
         for event_name, event_datetime in gp_events.items():
 
             # Add a space before Practice
