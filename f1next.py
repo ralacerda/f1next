@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+from functools import partial
 from math import ceil, floor
 from pathlib import Path
 
@@ -111,38 +112,40 @@ def f1next(force_download, schedule, countdown, circuit_information, test_json):
     first_event_day = min(list(gp_events.values()))
     last_event_day = max(list(gp_events.values()))
 
-    click.echo("The next ", nl=False)
-    click.secho("Formula 1 ", fg="bright_red", nl=False)
-    click.echo("weekend is the ", nl=False)
-    click.secho(next_round["raceName"], fg="bright_green", nl=False)
+    echo = partial(click.secho)
+
+    echo("The next ", nl=False)
+    echo("Formula 1 ", fg="bright_red", nl=False)
+    echo("weekend is the ", nl=False)
+    echo(next_round["raceName"], fg="bright_green", nl=False)
 
     if not schedule:
-        click.echo(" on ", nl=False)
+        echo(" on ", nl=False)
         if first_event_day.month == last_event_day.month:
             # If the month are the same, no need to print it twice
-            click.echo(first_event_day.strftime("%-d-"), nl=False)
+            echo(first_event_day.strftime("%-d-"), nl=False)
         else:
-            click.echo(first_event_day.strftime("%-d %B-"), nl=False)
-        click.echo(last_event_day.strftime("%-d %B"), nl=False)
+            echo(first_event_day.strftime("%-d %B-"), nl=False)
+        echo(last_event_day.strftime("%-d %B"), nl=False)
 
     # Linebreak
-    click.echo("")
+    echo("")
 
     if circuit_information:
         circuit = next_round["Circuit"]
         circuit_name = next_round["Circuit"]["circuitName"]
         circuit_city = next_round["Circuit"]["Location"]["locality"]
         circuit_country = next_round["Circuit"]["Location"]["country"]
-        click.echo("at the ", nl=False)
+        echo("at the ", nl=False)
         click.secho(f"{circuit_name}, {circuit_city}, {circuit_country}", bold=True)
 
     if schedule:
         # Line break for better ouput
-        click.echo("")
+        echo("")
 
         # Headears and a line
-        click.echo("Event".ljust(30) + "Date and local time")
-        click.echo("-----".ljust(30) + "-------------------")
+        echo("Event".ljust(30) + "Date and local time")
+        echo("-----".ljust(30) + "-------------------")
 
         for event_name, event_datetime in gp_events.items():
 
@@ -150,19 +153,17 @@ def f1next(force_download, schedule, countdown, circuit_information, test_json):
             if "Practice" in event_name:
                 event_name = event_name[:-8] + " " + event_name[-8:]
 
-            click.echo(event_name.ljust(30), nl=False)
-            click.echo(
-                event_datetime.astimezone().strftime("%d %b starting at %I:%M %p")
-            )
+            echo(event_name.ljust(30), nl=False)
+            echo(event_datetime.astimezone().strftime("%d %b starting at %I:%M %p"))
 
         # Footer line
-        click.echo("----")
+        echo("----")
 
         # I coud not find a easy way to show timezone name
         # Easiest solution is to show the UTC offset
         # We include de ":" because "%z" return +HHMM or -HHMM
         zone_offset = zone = gp_events["Race"].astimezone().strftime("%z")
-        click.echo("Showing times for UTC" + zone_offset[:3] + ":" + zone_offset[3:])
+        echo("Showing times for UTC" + zone_offset[:3] + ":" + zone_offset[3:])
 
     if countdown:
         current_datetime = datetime.now().replace(tzinfo=tz.gettz())
@@ -178,16 +179,16 @@ def f1next(force_download, schedule, countdown, circuit_information, test_json):
                 if "Practice" in event_name:
                     event_name = event_name[:-8] + " " + event_name[-8:]
 
-                click.echo(f"{event_name} will start in ", nl=False)
+                echo(f"{event_name} will start in ", nl=False)
 
                 if time_left.days > 1:
-                    click.echo(time_left.days, nl=False)
-                    click.echo(" days")
+                    echo(time_left.days, nl=False)
+                    echo(" days")
                 elif time_left.days == 1:
-                    click.echo("in 1 day,", nl=False)
-                    click.echo("{} hours and {} minutes".format(hours, minutes))
+                    echo("in 1 day,", nl=False)
+                    echo("{} hours and {} minutes".format(hours, minutes))
                 elif time_left.days == 0:
-                    click.echo("{} hours and {} minutes".format(hours, minutes))
+                    echo("{} hours and {} minutes".format(hours, minutes))
 
                 # Break to not print other events
                 # It doesn't print anything if it doesn't find an event in the future
