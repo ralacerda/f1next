@@ -60,9 +60,13 @@ Feel free to open an issue if you have any feedback or features suggestions.
 - [x] Weekend Schedule 
 - [x] Countdown to closest event 
 - [x] Option to display more information about the GP 
+- [x] Change main function to facilitate testing
 - [ ] Publish on PyPI
-- [ ] Error handling
-- [ ] Change main function to facilitate testing
+- [ ] Error handling:
+  - [ ] API call errors
+  - [ ] Can't find next event
+  - [ ] Invalid cache
+  - [ ] Last even is older than 24 hours
 
 ### Possible features
 
@@ -72,4 +76,5 @@ Feel free to open an issue if you have any feedback or features suggestions.
 - [ ] Better color output (grey out past events)
 - [ ] Verbose option for debugging
 - [ ] Option to open the wikipedia link for the circuit/event
+- [ ] Function to best output values based on 
 - [ ] ~~Emoji Flag~~
