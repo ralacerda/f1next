@@ -60,28 +60,24 @@ def get_event_datetime(event_date: str, event_time: str) -> datetime:
     "-f",
     "--force-download",
     is_flag=True,
-    default=False,
     help="Force cache to be refreshed.",
 )
 @click.option(
     "-s",
     "--schedule",
     is_flag=True,
-    default=False,
     help="Show the schedule for all events in the weekend.",
 )
 @click.option(
     "-c",
     "--countdown",
     is_flag=True,
-    default=False,
     help="Show countdown to the next event",
 )
 @click.option(
     "-i",
     "--circuit-information",
     is_flag=True,
-    default=False,
     help="Show circuit name and country",
 )
 @click.option("-t", "test_json", hidden=True, default=None, type=click.File())
