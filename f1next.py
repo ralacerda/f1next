@@ -19,10 +19,33 @@ events = [
 ]
 
 
+def get_json(force_download: bool) -> dict:
+    """A function that returns information about the next round.
+
+    It sets up a cache file for requests
+    If force_download is True, it deletes the cache first
+    It returns only the dictonary with information about the next round
+    """
+
+    cache_dir = appdirs.user_cache_dir("f1next", "f1next")
+    cache_file = "f1next_cache"
+    cache_path = Path(cache_dir, cache_file)
+
+    request = requests_cache.CachedSession(cache_path)
+    if force_download:
+        request.cache.clear()
+    api_url = "https://ergast.com/api/f1/current/next.json"
+    request_json = request.get(api_url).json()
+    return request_json["MRData"]["RaceTable"]["Races"][0]
+
+
 def get_event_datetime(event_date: str, event_time: str) -> datetime:
-    """A helper function that transforms a date string and a time string into
+    """A helper function that returns a timezone aware datetime.
+
+    It transforms a date string and a time string into
     a datetime object, with UTC as the timezone
     """
+
     datetime_format = "%Y-%m-%d %H:%M:%S"
     datetime_string = " ".join([event_date, event_time[:-1]])
     event_date = datetime.strptime(datetime_string, datetime_format)
@@ -60,18 +83,14 @@ def get_event_datetime(event_date: str, event_time: str) -> datetime:
     default=False,
     help="Show circuit name and country",
 )
-def f1next(force_download, schedule, countdown, circuit_information):
+@click.option("-t", "test_json", hidden=True, default=None, type=click.File())
+def f1next(force_download, schedule, countdown, circuit_information, test_json):
     """Simple script that shows you information about the next F1 Grand Prix"""
-    cache_dir = appdirs.user_cache_dir("f1next", "f1next")
-    cache_file = "f1next_cache"
-    cache_path = Path(cache_dir, cache_file)
 
-    request = requests_cache.CachedSession(cache_path)
-    if force_download:
-        request.cache.clear()
-    api_url = "https://ergast.com/api/f1/current/next.json"
-    request_json = request.get(api_url).json()
-    next_round = request_json["MRData"]["RaceTable"]["Races"][0]
+    if test_json:
+        next_round = json.load(test_json)["MRData"]["RaceTable"]["Races"][0]
+    else:
+        next_round = get_json(force_download)
 
     gp_events = {}
 
