@@ -80,8 +80,14 @@ def get_event_datetime(event_date: str, event_time: str) -> datetime:
     is_flag=True,
     help="Show circuit name and country",
 )
+@click.option(
+    "-r",
+    "--color",
+    is_flag=True,
+    help="Always printout colors and styling",
+)
 @click.option("-t", "test_json", hidden=True, default=None, type=click.File())
-def f1next(force_download, schedule, countdown, circuit_information, test_json):
+def f1next(force_download, schedule, countdown, circuit_information, color, test_json):
     """Simple script that shows you information about the next F1 Grand Prix"""
 
     if test_json:
@@ -108,7 +114,10 @@ def f1next(force_download, schedule, countdown, circuit_information, test_json):
     first_event_day = min(list(gp_events.values()))
     last_event_day = max(list(gp_events.values()))
 
-    echo = partial(click.secho)
+    if color:
+        echo = partial(click.secho, color=True)
+    else:
+        echo = partial(click.secho)
 
     echo("The next ", nl=False)
     echo("Formula 1 ", fg="bright_red", nl=False)
