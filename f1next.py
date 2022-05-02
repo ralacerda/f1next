@@ -147,6 +147,9 @@ def f1next(force_download, schedule, countdown, circuit_information, color, test
         echo("at the ", nl=False)
         echo(f"{circuit_name}, {circuit_city}, {circuit_country}", bold=True)
 
+    # current_datetime is used both in schedule and countdown options
+    current_datetime = datetime.now().replace(tzinfo=tz.gettz())
+
     if schedule:
         # Line break for better ouput
         echo("")
@@ -155,6 +158,8 @@ def f1next(force_download, schedule, countdown, circuit_information, color, test
         echo("Event".ljust(30) + "Date and local time")
         echo("-----".ljust(30) + "-------------------")
 
+        next_event = None
+
         for event_name, event_datetime in gp_events.items():
 
             # Add a space before "Practice"
@@ -162,7 +167,21 @@ def f1next(force_download, schedule, countdown, circuit_information, color, test
                 event_name = event_name[:-8] + " " + event_name[-8:]
 
             echo(event_name.ljust(30), nl=False)
-            echo(event_datetime.astimezone().strftime("%d %b starting at %I:%M %p"))
+
+            # Events in the future are higher
+            if event_datetime.astimezone() > current_datetime:
+                if not next_event:
+                    event_color = "bright_green"
+                    next_event = event_name
+                else:
+                    event_color = None
+            else:
+                event_color = 238
+
+            echo(
+                event_datetime.astimezone().strftime("%d %b starting at %I:%M %p"),
+                fg=event_color,
+            )
 
         # Footer line
         echo("----")
@@ -174,7 +193,6 @@ def f1next(force_download, schedule, countdown, circuit_information, color, test
         echo("Showing times for UTC" + zone_offset[:3] + ":" + zone_offset[3:])
 
     if countdown:
-        current_datetime = datetime.now().replace(tzinfo=tz.gettz())
 
         # Looking for the first event that has not started yet
         for event_name, event_datetime in gp_events.items():
