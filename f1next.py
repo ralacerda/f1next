@@ -84,6 +84,7 @@ def get_event_datetime(event_date: str, event_time: str) -> datetime:
     "-r",
     "--color",
     is_flag=True,
+    default=None,
     help="Always printout colors and styling",
 )
 @click.option("-t", "test_json", hidden=True, default=None, type=click.File())
@@ -114,10 +115,7 @@ def f1next(force_download, schedule, countdown, circuit_information, color, test
     first_event_day = min(list(gp_events.values()))
     last_event_day = max(list(gp_events.values()))
 
-    if color:
-        echo = partial(click.secho, color=True)
-    else:
-        echo = partial(click.secho)
+    echo = partial(click.secho, color=color)
 
     echo("The next ", nl=False)
     echo("Formula 1 ", fg="bright_red", nl=False)
