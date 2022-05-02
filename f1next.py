@@ -98,7 +98,7 @@ def f1next(force_download, schedule, countdown, circuit_information, color, test
 
     gp_events = {}
 
-    # Date of the next round refers to the next race date
+    # Date of the next round refers to the race date
     gp_events["Race"] = get_event_datetime(next_round["date"], next_round["time"])
 
     # Other events are in their own dictionaries
@@ -110,11 +110,16 @@ def f1next(force_download, schedule, countdown, circuit_information, color, test
                 next_round[key]["date"], next_round[key]["time"]
             )
 
+    # We sort the dictionary because events are not always the same order
+    # Mainly, Second Practice is not always right after First Practice
     gp_events = dict(sorted(gp_events.items(), key=lambda v: v[1]))
 
     first_event_day = min(list(gp_events.values()))
     last_event_day = max(list(gp_events.values()))
 
+    # If the `color` flag is `None` (default), `click.secho`
+    # will only print color codes if it detects a interactive terminal
+    # Setting `color` to `True` will always print ANSI escape colors
     echo = partial(click.secho, color=color)
 
     echo("The next ", nl=False)
@@ -140,7 +145,7 @@ def f1next(force_download, schedule, countdown, circuit_information, color, test
         circuit_city = next_round["Circuit"]["Location"]["locality"]
         circuit_country = next_round["Circuit"]["Location"]["country"]
         echo("at the ", nl=False)
-        click.secho(f"{circuit_name}, {circuit_city}, {circuit_country}", bold=True)
+        echo(f"{circuit_name}, {circuit_city}, {circuit_country}", bold=True)
 
     if schedule:
         # Line break for better ouput
@@ -152,7 +157,7 @@ def f1next(force_download, schedule, countdown, circuit_information, color, test
 
         for event_name, event_datetime in gp_events.items():
 
-            # Add a space before Practice
+            # Add a space before "Practice"
             if "Practice" in event_name:
                 event_name = event_name[:-8] + " " + event_name[-8:]
 
@@ -162,9 +167,9 @@ def f1next(force_download, schedule, countdown, circuit_information, color, test
         # Footer line
         echo("----")
 
-        # I coud not find a easy way to show timezone name
+        # I coud not find a easy way to show timezone names
         # Easiest solution is to show the UTC offset
-        # We include de ":" because "%z" return +HHMM or -HHMM
+        # We include de ":" because "%z" returns +HHMM or -HHMM
         zone_offset = zone = gp_events["Race"].astimezone().strftime("%z")
         echo("Showing times for UTC" + zone_offset[:3] + ":" + zone_offset[3:])
 
@@ -175,6 +180,10 @@ def f1next(force_download, schedule, countdown, circuit_information, color, test
         for event_name, event_datetime in gp_events.items():
             if event_datetime > current_datetime:
                 time_left = event_datetime - current_datetime
+
+                # `deltatime` objects only includes days and seconds
+                # so we calculate hours and minutes ourselves
+                # rounding down hours and rounding up minutes
                 hours = floor(time_left.seconds / (60 * 60))
                 minutes = ceil((time_left.seconds / 60) % 60)
 
