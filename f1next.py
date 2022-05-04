@@ -157,7 +157,9 @@ def f1next(force_download, schedule, countdown, circuit_information, color, test
         circuit_name = next_round["Circuit"]["circuitName"]
         circuit_city = next_round["Circuit"]["Location"]["locality"]
         circuit_country = next_round["Circuit"]["Location"]["country"]
-        echo("at the ", nl=False)
+
+        echo(f"Round {next_round['round']}", nl=False)
+        echo(" at the ", nl=False)
         echo(f"{circuit_name}, {circuit_city}, {circuit_country}", bold=True)
 
     # current_datetime is used both in schedule and countdown options

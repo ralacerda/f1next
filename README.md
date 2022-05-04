@@ -8,7 +8,6 @@ It uses [Ergast API](https://ergast.com/mrd) and includes cache to reduce API ca
 ## Usage
 
 ```
-
 Usage: f1next [OPTIONS]
 
   Simple script that shows you information about the next F1 Grand Prix
@@ -19,7 +18,8 @@ Options:
   -s, --schedule             Show the schedule for all events in the weekend.
   -c, --countdown            Show countdown to the next event
   -i, --circuit-information  Show circuit name and country
-  
+  -r, --color                Always printout colors and styling
+
 ```
 
 
@@ -29,9 +29,7 @@ Use the `-f` or `--force-download` flag to refresh the cache.
 The cache lasts for 24 hours, so information about the next Grand Prix might be wrong while another Grand Prix is taking place.
 
 The `-s` or `--schedule` flag will print the full schedule for the weekend, instead of only showing the first and last dates.
-It uses local time for the detected timezone.
-
-![Example of schedule](screenshots/screenshot_schedule.png "Schedule example")
+It uses local time as timezone.
 
 The `-c` or `--countdown` flag will also print a countdown in days to the next event. If the event starts in less than 48 hours, it will also print hours and minutes left.
 
@@ -44,8 +42,12 @@ All the options can be used together in any combination and order, except for `-
     f1next -c
     f1next -isc
     f1nxt -si
+    f1next -s
+
+![All output options at the same time](screenshots/screenshot3.png "All output options")
 
 The script uses `click.echo()` to print out information. If you pipe the output to a file, colors won't be included.
+To change this behaviour, include the `-r / --color` flag. It will always print out colors with ANSI escape code.
 
 ![Piping to a file](screenshots/screenshot2.png "Pipe to file")
 
@@ -63,7 +65,7 @@ Feel free to open an issue if you have any feedback or features suggestions.
 - [x] Change main function to facilitate testing
 - [ ] Publish on PyPI
 - [ ] Error handling:
-  - [ ] API call errors
+  - [x] API call errors
   - [ ] Can't find next event
   - [ ] Invalid cache
   - [ ] Last even is older than 24 hours
@@ -72,9 +74,7 @@ Feel free to open an issue if you have any feedback or features suggestions.
 
 - [x] Add `-h` shortcut for help message
 - [x] Scheadule table with better formating
-- [ ] Include round number
-- [ ] Better color output (grey out past events)
-- [ ] Verbose option for debugging
-- [ ] Option to open the wikipedia link for the circuit/event
-- [ ] Function to best output values based on 
+- [x] Include round number
+- [x] Better color output (grey out past events)
+- [ ] ~~Option to open the wikipedia link for the circuit/event~~
 - [ ] ~~Emoji Flag~~
