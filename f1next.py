@@ -7,6 +7,7 @@ from pathlib import Path
 import appdirs
 import click
 import requests_cache
+import requests
 from dateutil import tz
 
 # List of possible events
@@ -36,8 +37,20 @@ def get_json(force_download: bool) -> dict:
     if force_download:
         request.cache.clear()
     api_url = "https://ergast.com/api/f1/current/next.json"
-    request_json = request.get(api_url).json()
-    return request_json["MRData"]["RaceTable"]["Races"][0]
+
+    try:
+        response = request.get(api_url)
+        response.raise_for_status()
+    except requests.exceptions.Timeout as e:
+        print("Connection error")
+        request.cache.clear()
+        exit(1)
+    except requests.exceptions.RequestException as e:
+        # print(e)
+        print("Error downloading data")
+        request.cache.clear()
+        exit(1)
+    return response.json()["MRData"]["RaceTable"]["Races"][0]
 
 
 def get_event_datetime(event_date: str, event_time: str) -> datetime:
@@ -223,3 +236,6 @@ def f1next(force_download, schedule, countdown, circuit_information, color, test
                 # Break to not print other events
                 # It doesn't print anything if it doesn't find an event in the future
                 break
+
+    # We exit the `f1next` command with a sucess code
+    exit(0)
