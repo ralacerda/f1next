@@ -230,7 +230,7 @@ def f1next(force_download, schedule, countdown, circuit_information, color, test
                     echo(time_left.days, nl=False)
                     echo(" days")
                 elif time_left.days == 1:
-                    echo("in 1 day,", nl=False)
+                    echo("in 1 day, ", nl=False)
                     echo("{} hours and {} minutes".format(hours, minutes))
                 elif time_left.days == 0:
                     echo("{} hours and {} minutes".format(hours, minutes))
