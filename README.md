@@ -3,7 +3,7 @@
 A simple python script that prints the dates of the next Formula 1 Grand Prix.
 It uses [Ergast API](https://ergast.com/mrd) and includes cache to reduce API calls.
 
-![Example of output](screenshots/screenshot1.png "Example")
+![Example of output](https://raw.githubusercontent.com/ralacerda/f1next/main/screenshots/screenshot1.png "Example")
 
 ## Usage
 
@@ -44,12 +44,12 @@ All the options can be used together in any combination and order, except for `-
     f1nxt -si
     f1next -s
 
-![All output options at the same time](screenshots/screenshot3.png "All output options")
+![All output options at the same time](https://raw.githubusercontent.com/ralacerda/f1next/main/screenshots/screenshot3.png "All output options")
 
 The script uses `click.echo()` to print out information. If you pipe the output to a file, colors won't be included.
 To change this behaviour, include the `-r / --color` flag. It will always print out colors with ANSI escape code.
 
-![Piping to a file](screenshots/screenshot2.png "Pipe to file")
+![Piping to a file](https://raw.githubusercontent.com/ralacerda/f1next/main/screenshots/screenshot2.png "Pipe to file")
 
 
 ## Notes
