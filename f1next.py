@@ -233,7 +233,10 @@ def f1next(force_download, schedule, countdown, circuit_information, color, test
                     echo("in 1 day, ", nl=False)
                     echo("{} hours and {} minutes".format(hours, minutes))
                 elif time_left.days == 0:
-                    echo("{} hours and {} minutes".format(hours, minutes))
+                    if hours > 0:
+                        echo("{} hours and {} minutes".format(hours, minutes))
+                    if hours == 0:
+                        echo("{} minutes".format(hours, minutes))
 
                 # Break to not print other events
                 # It doesn't print anything if it doesn't find an event in the future
