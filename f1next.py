@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 from functools import partial
 from math import ceil, floor
 from pathlib import Path
@@ -51,6 +51,35 @@ def get_json(force_download: bool) -> dict:
         request.cache.clear()
         exit(1)
     return response.json()["MRData"]["RaceTable"]["Races"][0]
+
+
+def get_countdown_string(time_left: timedelta) -> str:
+    """This function produces a string based on
+    the time left for the event.
+
+    It takes a `timedelta` object and returns a string
+    with days, hours and minutes.
+    """
+
+    countdown_string = ""
+
+    # `deltatime` objects only includes days and seconds
+    # so we calculate hours and minutes ourselves
+    # rounding down hours and rounding up minutes
+    countdown_time = {
+        "day": time_left.days,
+        "hour": floor(time_left.seconds / (60 * 60)),
+        "minute": ceil((time_left.seconds / 60) % 60),
+    }
+
+    for unit, amount in countdown_time.items():
+        # We only print if the amount if higher than 0
+        if amount > 0:
+            countdown_string += f"{amount} {unit}"
+            # If amount if higher than 1, we include the "s" for plural
+            countdown_string += "s " if amount > 1 else " "
+
+    return countdown_string
 
 
 def get_event_datetime(event_date: str, event_time: str) -> datetime:
@@ -212,31 +241,13 @@ def f1next(force_download, schedule, countdown, circuit_information, color, test
         # Looking for the first event that has not started yet
         for event_name, event_datetime in gp_events.items():
             if event_datetime > current_datetime:
-                time_left = event_datetime - current_datetime
-
-                # `deltatime` objects only includes days and seconds
-                # so we calculate hours and minutes ourselves
-                # rounding down hours and rounding up minutes
-                hours = floor(time_left.seconds / (60 * 60))
-                minutes = ceil((time_left.seconds / 60) % 60)
 
                 # Add a space before Practice
                 if "Practice" in event_name:
                     event_name = event_name[:-8] + " " + event_name[-8:]
 
                 echo(f"{event_name} will start in ", nl=False)
-
-                if time_left.days > 1:
-                    echo(time_left.days, nl=False)
-                    echo(" days")
-                elif time_left.days == 1:
-                    echo("in 1 day, ", nl=False)
-                    echo("{} hours and {} minutes".format(hours, minutes))
-                elif time_left.days == 0:
-                    if hours > 0:
-                        echo("{} hours and {} minutes".format(hours, minutes))
-                    if hours == 0:
-                        echo("{} minutes".format(hours, minutes))
+                echo(get_countdown_string(event_datetime - current_datetime))
 
                 # Break to not print other events
                 # It doesn't print anything if it doesn't find an event in the future
