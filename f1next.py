@@ -198,9 +198,15 @@ def f1next(force_download, schedule, countdown, circuit_information, color, test
         # Line break for better ouput
         echo("")
 
+        # I coud not find a easy way to show timezone names
+        # Easiest solution is to show the UTC offset
+        # We include de ":" because "%z" returns +HHMM or -HHMM
+        zone_offset = zone = gp_events["Race"].astimezone().strftime("%z")
+        zone_offset = zone_offset[:3] + ":" + zone_offset[3:]
+
         # Headears and a line
-        echo("Event".ljust(30) + "Date and local time")
-        echo("-----".ljust(30) + "-------------------")
+        echo("Event".ljust(25) + f"Date and Time (UTC{zone_offset})")
+        echo("-----".ljust(25) + "-------------------")
 
         next_event = None
 
@@ -210,7 +216,7 @@ def f1next(force_download, schedule, countdown, circuit_information, color, test
             if "Practice" in event_name:
                 event_name = event_name[:-8] + " " + event_name[-8:]
 
-            echo(event_name.ljust(30), nl=False)
+            echo(event_name.ljust(25), nl=False)
 
             # Events in the future are higher
             if event_datetime.astimezone() > current_datetime:
@@ -227,16 +233,10 @@ def f1next(force_download, schedule, countdown, circuit_information, color, test
                 fg=event_color,
             )
 
-        # Footer line
-        echo("----")
-
-        # I coud not find a easy way to show timezone names
-        # Easiest solution is to show the UTC offset
-        # We include de ":" because "%z" returns +HHMM or -HHMM
-        zone_offset = zone = gp_events["Race"].astimezone().strftime("%z")
-        echo("Showing times for UTC" + zone_offset[:3] + ":" + zone_offset[3:])
-
     if countdown:
+
+        # Blank line first
+        echo("")
 
         # Looking for the first event that has not started yet
         for event_name, event_datetime in gp_events.items():
