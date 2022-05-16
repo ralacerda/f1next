@@ -33,7 +33,7 @@ def get_json(force_download: bool) -> dict:
     cache_file = "f1next_cache"
     cache_path = Path(cache_dir, cache_file)
 
-    request = requests_cache.CachedSession(cache_path)
+    request = requests_cache.CachedSession(str(cache_path))
     if force_download:
         request.cache.clear()
     api_url = "https://ergast.com/api/f1/current/next.json"
@@ -41,11 +41,11 @@ def get_json(force_download: bool) -> dict:
     try:
         response = request.get(api_url)
         response.raise_for_status()
-    except requests.exceptions.Timeout as e:
+    except requests.exceptions.Timeout:
         print("Connection error")
         request.cache.clear()
         exit(1)
-    except requests.exceptions.RequestException as e:
+    except requests.exceptions.RequestException:
         # print(e)
         print("Error downloading data")
         request.cache.clear()
@@ -91,9 +91,9 @@ def get_event_datetime(event_date: str, event_time: str) -> datetime:
 
     datetime_format = "%Y-%m-%d %H:%M:%S"
     datetime_string = " ".join([event_date, event_time[:-1]])
-    event_date = datetime.strptime(datetime_string, datetime_format)
-    event_date = event_date.replace(tzinfo=tz.UTC)
-    return event_date
+    event_datetime = datetime.strptime(datetime_string, datetime_format)
+    event_datetime = event_datetime.replace(tzinfo=tz.UTC)
+    return event_datetime
 
 
 @click.command()
@@ -183,9 +183,9 @@ def f1next(force_download, schedule, countdown, circuit_information, color, test
 
     if circuit_information:
         circuit = next_round["Circuit"]
-        circuit_name = next_round["Circuit"]["circuitName"]
-        circuit_city = next_round["Circuit"]["Location"]["locality"]
-        circuit_country = next_round["Circuit"]["Location"]["country"]
+        circuit_name = circuit["circuitName"]
+        circuit_city = circuit["Location"]["locality"]
+        circuit_country = circuit["Location"]["country"]
 
         echo(f"Round {next_round['round']}", nl=False)
         echo(" at the ", nl=False)
@@ -201,7 +201,7 @@ def f1next(force_download, schedule, countdown, circuit_information, color, test
         # I coud not find a easy way to show timezone names
         # Easiest solution is to show the UTC offset
         # We include de ":" because "%z" returns +HHMM or -HHMM
-        zone_offset = zone = gp_events["Race"].astimezone().strftime("%z")
+        zone_offset = gp_events["Race"].astimezone().strftime("%z")
         zone_offset = zone_offset[:3] + ":" + zone_offset[3:]
 
         # Headears and a line
