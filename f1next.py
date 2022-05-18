@@ -1,4 +1,3 @@
-import json
 from datetime import datetime, timedelta
 from functools import partial
 from math import ceil, floor
@@ -103,15 +102,11 @@ def get_event_datetime(event_date: str, event_time: str) -> datetime:
 @click.option( "-c", "--countdown", is_flag=True, help="Show countdown to the next event",)
 @click.option( "-i", "--circuit-information", is_flag=True, help="Show circuit name and country",)
 @click.option( "-r", "--color", is_flag=True, default=None, help="Always printout colors and styling",)
-@click.option("-t", "test_json", hidden=True, default=None, type=click.File())
 # fmt: on
-def f1next(force_download, schedule, countdown, circuit_information, color, test_json):
+def f1next(force_download, schedule, countdown, circuit_information, color):
     """Simple script that shows you information about the next F1 Grand Prix"""
 
-    if test_json:
-        next_round = json.load(test_json)["MRData"]["RaceTable"]["Races"][0]
-    else:
-        next_round = get_json(force_download)
+    next_round = get_json(force_download)
 
     gp_events = {}
 
