@@ -46,7 +46,6 @@ def get_json(force_download: bool) -> dict:
         request.cache.clear()
         exit(1)
     except requests.exceptions.RequestException:
-        # print(e)
         print("Error downloading data")
         request.cache.clear()
         exit(1)
@@ -96,40 +95,16 @@ def get_event_datetime(event_date: str, event_time: str) -> datetime:
     return event_datetime
 
 
+# fmt: off
 @click.command()
 @click.help_option("-h", "--help")
-@click.option(
-    "-f",
-    "--force-download",
-    is_flag=True,
-    help="Force cache to be refreshed.",
-)
-@click.option(
-    "-s",
-    "--schedule",
-    is_flag=True,
-    help="Show the schedule for all events in the weekend.",
-)
-@click.option(
-    "-c",
-    "--countdown",
-    is_flag=True,
-    help="Show countdown to the next event",
-)
-@click.option(
-    "-i",
-    "--circuit-information",
-    is_flag=True,
-    help="Show circuit name and country",
-)
-@click.option(
-    "-r",
-    "--color",
-    is_flag=True,
-    default=None,
-    help="Always printout colors and styling",
-)
+@click.option( "-f", "--force-download", is_flag=True, help="Force cache to be refreshed.",)
+@click.option( "-s", "--schedule", is_flag=True, help="Show the schedule for all events in the weekend.",)
+@click.option( "-c", "--countdown", is_flag=True, help="Show countdown to the next event",)
+@click.option( "-i", "--circuit-information", is_flag=True, help="Show circuit name and country",)
+@click.option( "-r", "--color", is_flag=True, default=None, help="Always printout colors and styling",)
 @click.option("-t", "test_json", hidden=True, default=None, type=click.File())
+# fmt: on
 def f1next(force_download, schedule, countdown, circuit_information, color, test_json):
     """Simple script that shows you information about the next F1 Grand Prix"""
 
@@ -237,7 +212,6 @@ def f1next(force_download, schedule, countdown, circuit_information, color, test
 
         # Blank line first
         echo("")
-
         # Looking for the first event that has not started yet
         for event_name, event_datetime in gp_events.items():
             if event_datetime > current_datetime:
