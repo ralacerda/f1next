@@ -54,9 +54,9 @@ To change this behaviour, include the `-r / --color` flag. It will always print 
 
 ### Example of usage
 
-If you are on KDE Plasma, you can use the [https://store.kde.org/p/1166510/](command output) widget to get the output as an HTML panel.   
+If you are on KDE Plasma, you can use the [command output](chttps://store.kde.org/p/1166510/) widget to get the output as an HTML panel.   
 
-![Command output usage](file](https://raw.githubusercontent.com/ralacerda/f1next/main/screenshots/screenshot4.png "Example of usage")
+![Command output usage](https://raw.githubusercontent.com/ralacerda/f1next/main/screenshots/screenshot4.png "Example of usage")
 
 To keep the tables aligned while including colors, you need to change every whitespace to `&nbsp;`:
 ```
