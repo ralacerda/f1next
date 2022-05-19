@@ -52,6 +52,16 @@ To change this behaviour, include the `-r / --color` flag. It will always print 
 ![Piping to a file](https://raw.githubusercontent.com/ralacerda/f1next/main/screenshots/screenshot2.png "Pipe to file")
 
 
+### Example of usage
+
+If you are on KDE Plasma, you can use the [https://store.kde.org/p/1166510/](command output) widget to get the output as an HTML panel.   
+
+![Command output usage](file](https://raw.githubusercontent.com/ralacerda/f1next/main/screenshots/screenshot4.png "Example of usage")
+
+To keep the tables aligned while including colors, you need to change every whitespace to `&nbsp;`:
+```
+    ~/.local/bin/f1next -scr | sed 's/ /\&nbsp;/g'
+```
 ## Notes
 
 This is a simple hobby project. My main goal was to get familiarity with `python`, `click` and `git`. 
