@@ -143,10 +143,10 @@ def f1next(force_download, schedule, countdown, circuit_information, color):
         echo(" on ", nl=False)
         if first_event_day.month == last_event_day.month:
             # If the month are the same, no need to print it twice
-            echo(first_event_day.strftime("%-d-"), nl=False)
+            echo(first_event_day.strftime("%d-"), nl=False)
         else:
-            echo(first_event_day.strftime("%-d %B-"), nl=False)
-        echo(last_event_day.strftime("%-d %B"), nl=False)
+            echo(first_event_day.strftime("%d %B-"), nl=False)
+        echo(last_event_day.strftime("%d %B"), nl=False)
 
     # Linebreak
     echo("")
@@ -204,7 +204,6 @@ def f1next(force_download, schedule, countdown, circuit_information, color):
             )
 
     if countdown:
-
         # Blank line first
         echo("")
         # Looking for the first event that has not started yet
