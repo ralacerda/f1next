@@ -218,8 +218,12 @@ def f1next(force_download, schedule, countdown, circuit_information, color):
                 echo(get_countdown_string(event_datetime - current_datetime))
 
                 # Break to not print other events
-                # It doesn't print anything if it doesn't find an event in the future
                 break
+        # If the for loop doesn't break
+        else:
+            echo(
+                f"The race started {get_countdown_string(current_datetime - gp_events['Race'])}ago"
+            )
 
     # We exit the `f1next` command with a sucess code
     exit(0)
