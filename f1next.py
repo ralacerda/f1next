@@ -32,7 +32,9 @@ def get_json(force_download: bool) -> dict:
     cache_file = "f1next_cache"
     cache_path = Path(cache_dir, cache_file)
 
-    request = requests_cache.CachedSession(str(cache_path))
+    request = requests_cache.CachedSession(
+        str(cache_path), expire_after=timedelta(hours=6)
+    )
     if force_download:
         request.cache.clear()
     api_url = "https://ergast.com/api/f1/current/next.json"
