@@ -26,7 +26,8 @@ Options:
 `f1next` will print the name and date of the next Formula 1 Grand Prix.
 
 Use the `-f` or `--force-download` flag to refresh the cache.
-The cache lasts for 24 hours, so information about the next Grand Prix might be wrong while another Grand Prix is taking place.
+The cache lasts for 6 hours, so information about the next Grand Prix might be wrong while another Grand Prix is taking place. This is normal
+even if your cache is up to date due to how the Ergast API work.
 
 The `-s` or `--schedule` flag will print the full schedule for the weekend, instead of only showing the first and last dates.
 It uses local time as timezone.
@@ -78,7 +79,7 @@ Feel free to open an issue if you have any feedback or features suggestions.
   - [x] API call errors
   - [ ] Can't find next event
   - [ ] Invalid cache
-  - [ ] Last even is older than 24 hours
+  - [X] Last event is older than 24 hours
 
 ### Possible features
 
